@@ -3,15 +3,38 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>Wave</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
+    <link href="~/Content/bootstrap-5.2.0-beta1-dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-   <!-- Header and navbar goes here -->
+    <style>
+        body {
+            background-color:#424242;
+            
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+    </style>
+    <nav class="navbar p-2 px-5 mx-auto" style="background-color:#343434">
+        <div class="container-fluid">
+            <a class="navbar-brand fs-2 text-center" href="#" style="color: #EA5455;">Wave</a>
+
+            <ul class="nav justify-content-center">
+                <li class="nav-item">
+                    <a class="nav-link " href="#" style="color: #FDE9C9">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="#" style="color: #FDE9C9">Sign Up</a>
+                </li>   
+                <li class="nav-item">
+                    <a class="nav-link" href="#" style="color: #FDE9C9">About</a>
+                </li>
+            </ul>
+    </nav>
     <div class="container body-content">
-        @RenderBody() 
+        @RenderBody()
     </div>
 
 </body>
