@@ -11,7 +11,7 @@ body {
     background-color: var(--dark-cozy-reddish);
 
 }
-#nav000 {       
+#nav000 ,#DashCard001 {       
     background-color: var(--cozy-reddish);    
 }
 #navBrand, a.nav-link:hover, a.nav-link:focus {
