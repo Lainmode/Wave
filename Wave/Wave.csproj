@@ -195,6 +195,7 @@
   <ItemGroup>
     <Content Include="Content\assets\%24RX4I3RA.jpg" />
     <Content Include="Content\assets\chaisiri-tiewsirichaisakul-lCfnD10lC44-unsplash.jpg" />
+    <Content Include="Content\assets\css\mainPersonal.css" />
     <Content Include="Content\assets\daniel-olah-5_eRcisHc2c-unsplash.jpg" />
     <Content Include="Content\assets\kym-mackinnon-Fiy_aYeob1c-unsplash.jpg" />
     <Content Include="Content\assets\nitish-meena-RbbdzZBKRDY-unsplash.jpg" />

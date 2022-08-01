@@ -1,0 +1,11 @@
+﻿body {      background-color: #424242;}
+#nav000 {       
+    background-color: #343434;    
+    
+}
+#navBrand , a.nav-link:hover {
+    color: #EA5455;
+}
+a.nav-link {
+    color: #FDE9C9;
+}
