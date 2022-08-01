@@ -1,11 +1,22 @@
-﻿body {      background-color: #424242;}
-#nav000 {       
-    background-color: #343434;    
-    
+﻿:root {
+    --dark-cozy-reddish: #424242;
+    --cozy-reddish: #343434;
+    --cozy-red: #EA5455;
+    --cozy-beige: #FDE9C9;
 }
-#navBrand , a.nav-link:hover {
-    color: #EA5455;
+
+
+
+body {      
+    background-color: var(--dark-cozy-reddish);
+
+}
+#nav000 {       
+    background-color: var(--cozy-reddish);    
+}
+#navBrand, a.nav-link:hover, a.nav-link:focus {
+    color: var(--cozy-red);
 }
 a.nav-link {
-    color: #FDE9C9;
+    color: var(--cozy-beige);
 }
