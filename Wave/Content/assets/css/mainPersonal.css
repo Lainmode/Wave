@@ -11,9 +11,13 @@ body {
     background-color: var(--dark-cozy-reddish);
 
 }
-#nav000 ,#DashCard001 {       
-    background-color: var(--cozy-reddish);    
+#nav000, #DashCard001 {
+    background-color: var(--cozy-reddish);
 }
+#PhoneVerCard002{
+    width : 12%
+}
+
 #navBrand, a.nav-link:hover, a.nav-link:focus {
     color: var(--cozy-red);
 }
