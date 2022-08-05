@@ -1,7 +1,7 @@
 ﻿:root {
   --dark-cozy-reddish: #343434;
   --cozy-reddish: #424242;
-  --cozy-red: #EA5455;
+  --cozy-red: #F1732C;
   --cozy-beige: #FDE9C9;
 }
 
@@ -20,11 +20,13 @@ label.form-label {
 input.form-control {
   background-color: var(--dark-cozy-reddish);
   border-color: var(--cozy-red);
+  color: var(--cozy-beige);
 }
 
 input.form-control:focus {
   background-color: var(--dark-cozy-reddish);
   border-color: var(--cozy-red);
+  color: var(--cozy-beige);
   box-shadow: 0 0 0 0.2rem rgba(234, 84, 85, 0.25);
 }
 
@@ -65,7 +67,7 @@ a.nav-link {
     width: 150px;
   }
 
-  ul {
-    margin-right: auto;
+  li.nav-item {
+    display: none;
   }
 }
