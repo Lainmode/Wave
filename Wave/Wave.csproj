@@ -196,6 +196,9 @@
     <Content Include="Content\assets\%24RX4I3RA.jpg" />
     <Content Include="Content\assets\chaisiri-tiewsirichaisakul-lCfnD10lC44-unsplash.jpg" />
     <Content Include="Content\assets\css\mainPersonal.css" />
+    <Content Include="Content\assets\css\mainPersonal.min.css">
+      <DependentUpon>mainPersonal.css</DependentUpon>
+    </Content>
     <Content Include="Content\assets\daniel-olah-5_eRcisHc2c-unsplash.jpg" />
     <Content Include="Content\assets\kym-mackinnon-Fiy_aYeob1c-unsplash.jpg" />
     <Content Include="Content\assets\nitish-meena-RbbdzZBKRDY-unsplash.jpg" />
@@ -248,6 +251,11 @@
     <Content Include="Content\bootstrap-5.2.0-beta1-dist\js\bootstrap.esm.min.js.map" />
     <Content Include="Content\bootstrap-5.2.0-beta1-dist\js\bootstrap.js.map" />
     <Content Include="Content\bootstrap-5.2.0-beta1-dist\js\bootstrap.min.js.map" />
+    <Content Include="Content\assets\css\mainPersonal.scss" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

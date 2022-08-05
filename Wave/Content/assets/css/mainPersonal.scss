@@ -1,0 +1,72 @@
+﻿:root {
+    --dark-cozy-reddish: #343434;
+    --cozy-reddish: #424242;
+    --cozy-red: #EA5455;
+    --cozy-beige: #FDE9C9;
+}
+
+
+
+body {
+    background-color: var(--cozy-reddish);
+}
+
+#nav000 {
+    background-color: var(--dark-cozy-reddish);
+
+}
+
+
+
+label.form-label {
+    color: var(--cozy-red);
+}
+
+input.form-control {
+    background-color: var(--dark-cozy-reddish);
+    border-color: var(--cozy-red);
+}
+
+input.form-control:focus {
+    background-color: var(--dark-cozy-reddish);
+    border-color: var(--cozy-red);
+    box-shadow: 0 0 0 0.2rem rgba(234, 84, 85, 0.25);
+}
+//  Button
+button.btn-primary {
+    background-color: var(--dark-cozy-reddish);
+    color: var(--cozy-red);
+}
+button.btn-primary:hover {
+    background-color: var(--cozy-reddish);
+    color: var(--cozy-red);
+}
+button.btn-primary:focus {
+    background-color: var(--cozy-red);
+    color: var(--cozy-beige);
+    box-shadow: 0 0 0 0.2rem rgba(234, 84, 85, 0.25);
+}
+
+button.btn-primary:focus:active {
+    background-color: var(--cozy-red);
+    color: var(--cozy-beige);
+    box-shadow: 0 0 0 0.2rem rgba(234, 84, 85, 0.25);
+}
+//nav
+#navBrand, a.nav-link:hover, a.nav-link:focus {
+    color: var(--cozy-red);
+}
+
+a.nav-link {
+    color: var(--cozy-beige);
+}
+
+
+@media only screen and (max-width: 600px) {
+    a.navbar-brand {
+        margin-left: auto;
+        margin-right: auto;
+        width: 150px;
+    }
+    
+}
