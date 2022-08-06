@@ -59,6 +59,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -141,6 +143,27 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Customer.cs">
+      <DependentUpon>WaveDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Scan.cs">
+      <DependentUpon>WaveDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\WaveDb.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WaveDb.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\WaveDb.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WaveDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\WaveDb.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WaveDb.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -192,6 +215,16 @@
     <Content Include="Content\bootstrap-5.1.1-dist\js\bootstrap.esm.min.js.map" />
     <Content Include="Content\bootstrap-5.1.1-dist\js\bootstrap.js.map" />
     <Content Include="Content\bootstrap-5.1.1-dist\js\bootstrap.min.js.map" />
+    <Content Include="Models\WaveDb.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WaveDb.edmx</DependentUpon>
+      <LastGenOutput>WaveDb.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\WaveDb.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WaveDb.edmx</DependentUpon>
+      <LastGenOutput>WaveDb.cs</LastGenOutput>
+    </Content>
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -206,12 +239,21 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
     <Folder Include="Views\Api\" />
     <Folder Include="Views\Manage\" />
   </ItemGroup>
   <ItemGroup>
+    <EntityDeploy Include="Models\WaveDb.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>WaveDb.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\WaveDb.edmx.diagram">
+      <DependentUpon>WaveDb.edmx</DependentUpon>
+    </Content>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

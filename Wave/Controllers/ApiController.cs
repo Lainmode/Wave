@@ -14,16 +14,16 @@ namespace Wave.Controllers
     {
         // GET: Api
         [HttpPost]
-        public JsonResult SetOTP(string phoneNumber)
+        public async Task<JsonResult> SetOTP(string phoneNumber)
         {
             Random random = new Random();
             if((Session["OTPSendRequests"] != null && (int)Session["OTPSendRequests"] < 3) || Session["OTPSendRequests"] == null)
             {
                 string otp = random.Next(1000, 10000).ToString(); // generates otp between 100k and 1mil (no 000001)
                 Session["OTP"] = otp;
-                Session["OTPSendRequests"] = Session["OTPSendRequests"] != null ? (int)Session["OTPSendRequests"] + 1 : 1;
+                Session["OTPSendRequests"] = Session["OTPSendRequests"] != null ? (int)Session["OTPSendRequests"] /* + 1*/ : 1;
                 // Send OTP to phone code goes here
-                Common.SendOTPMessage(phoneNumber, otp).Wait();
+                await Common.SendOTPMessage(phoneNumber, otp);
                 return Json(Common.BuildGeneralResponseJson(true, ResponseCode.OTPRequestSuccessful, "OTP Sent!"));
             }
 
@@ -37,7 +37,8 @@ namespace Wave.Controllers
             {
                 if (otp == (string)Session["OTP"])
                 {
-                    return Json(Common.BuildGeneralResponseJson(true, ResponseCode.OTPVerificationSuccessful, "Phone number verified!"));
+                    // register phone here and create all the stuff uknow 
+                    return Json(Common.BuildGeneralResponseJson(true, ResponseCode.OTPVerificationSuccessful, "Phone number verified!", "http://localhost/Home/Index"));
                 }
                 Session["OTPSubmitTries"] = Session["OTPSubmitTries"] != null ? (int)Session["OTPSubmitTries"] + 1 : 1;
                 return Json(Common.BuildGeneralResponseJson(false, ResponseCode.IncorrectOTP, "Incorrect OTP!"));
@@ -53,6 +54,12 @@ namespace Wave.Controllers
             {
                 return new { success = isSuccess, code = (int)responseCode, message = message };
             }
+
+            public static object BuildGeneralResponseJson(bool isSuccess, ResponseCode responseCode, string message, string redirectUri)
+            {
+                return new { success = isSuccess, code = (int)responseCode, message = message, redirectUri = redirectUri };
+            }
+
 
             public static async Task SendOTPMessage(string phoneNumber, string otp)
             {
