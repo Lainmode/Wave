@@ -63,8 +63,6 @@
         <EntityType Name="Scan">
           <Key>
             <PropertyRef Name="ID" />
-            <PropertyRef Name="CustomerID" />
-            <PropertyRef Name="ScanDate" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="CustomerID" Type="Int32" Nullable="false" />
