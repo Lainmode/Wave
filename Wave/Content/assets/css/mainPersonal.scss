@@ -1,65 +1,64 @@
 ﻿:root {
-    --dark-cozy-reddish: #343434;
-    --cozy-reddish: #424242;
-    --cozy-red: #F1732C;
-    --cozy-beige: #FDE9C9;
+    --primary: #343434;
+    --secondary: #424242;
+    --tertiary: #F1732C;
+    --quaternary: #FDE9C9;
 }
 
 
 
 body {
-    background-color: var(--cozy-reddish);
+    background-color: var(--secondary);
 }
 
 #nav000 {
-    background-color: var(--dark-cozy-reddish);
-
+    background-color: var(--primary); 
 }
 
 
 
 label.form-label {
-    color: var(--cozy-red);
+    color: var(--tertiary); 
 }
 
 input.form-control {
-    background-color: var(--dark-cozy-reddish);
-    border-color: var(--cozy-red);
-    color: var(--cozy-beige);
+    background-color: var(--primary); 
+    border-color: var(--tertiary); 
+    color: var(--quaternary); 
 }
 input.form-control:focus {
-    background-color: var(--dark-cozy-reddish);
-    border-color: var(--cozy-red);
-    color: var(--cozy-beige);
+    background-color: var(--primary);
+    border-color: var(--tertiary); 
+    color: var(--quaternary); 
     box-shadow: 0 0 0 0.2rem rgba(234, 84, 85, 0.25);
 }
 //  Button
 button.btn-primary {
-    background-color: var(--dark-cozy-reddish);
-    color: var(--cozy-red);
+    background-color: var(--primary); 
+    color: var(--tertiary); 
 }
 button.btn-primary:hover {
-    background-color: var(--cozy-reddish);
-    color: var(--cozy-red);
+    background-color: var(--secondary);
+    color: var(--tertiary); 
 }
 button.btn-primary:focus {
-    background-color: var(--cozy-red);
-    color: var(--cozy-beige);
+    background-color: var(--tertiary); 
+    color: var(--quaternary); 
     box-shadow: 0 0 0 0.2rem rgba(234, 84, 85, 0.25);
 }
 
 button.btn-primary:focus:active {
-    background-color: var(--cozy-red);
-    color: var(--cozy-beige);
+    background-color: var(--tertiary); 
+    color: var(--quaternary); 
     box-shadow: 0 0 0 0.2rem rgba(234, 84, 85, 0.25);
 }
 //nav
 #navBrand, a.nav-link:hover, a.nav-link:focus {
-    color: var(--cozy-red);
+    color: var(--tertiary); 
 }
 
 a.nav-link {
-    color: var(--cozy-beige);
+    color: var(--quaternary); 
 }
 
 
