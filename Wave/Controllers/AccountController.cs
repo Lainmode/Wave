@@ -23,6 +23,11 @@ namespace Wave.Controllers
         {
             return View();
         }
-       
+
+        public ActionResult LoyaltyCard() 
+        {
+            return View(); 
+        }
+
     }
 }

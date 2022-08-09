@@ -285,6 +285,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Account\VerifySMS.cshtml" />
     <Content Include="Views\Account\PhoneLogin.cshtml" />
+    <Content Include="Views\Account\LoyaltyCard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
