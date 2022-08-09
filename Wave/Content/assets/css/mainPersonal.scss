@@ -24,7 +24,7 @@ label.form-label {
 input.form-control {
     background-color: var(--primary); 
     border-color: var(--tertiary); 
-    color: var(--quaternary); 
+    color: var(--quaternary);
 }
 input.form-control:focus {
     background-color: var(--primary);
@@ -32,6 +32,7 @@ input.form-control:focus {
     color: var(--quaternary); 
     box-shadow: 0 0 0 0.2rem rgba(234, 84, 85, 0.25);
 }
+
 //  Button
 button.btn-primary {
     background-color: var(--primary); 
