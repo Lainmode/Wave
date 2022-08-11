@@ -3,6 +3,7 @@
   --secondary: #3D3D3D;
   --tertiary: #F1732C;
   --quaternary: #FDE9C9;
+  --stroke-width: 10;
 }
 
 body {
@@ -58,6 +59,23 @@ button.btn-primary:focus:active {
 
 a.nav-link {
   color: var(--quaternary);
+}
+
+div.card {
+  background-color: var(--primary);
+}
+
+h2 {
+  color: var(--tertiary);
+}
+
+h2.Cafe-Name {
+  color: var(--quaternary);
+}
+
+.row-Cafe-Name {
+  background-color: var(--primary);
+  margin: 20px;
 }
 
 @media only screen and (max-width: 600px) {

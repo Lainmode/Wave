@@ -3,6 +3,7 @@
     --secondary: #3D3D3D;
     --tertiary: #F1732C;
     --quaternary: #FDE9C9;
+    --stroke-width: 10;
 }
 
 
@@ -12,56 +13,81 @@ body {
 }
 
 #nav000 {
-    background-color: var(--primary); 
+    background-color: var(--primary);
 }
 
 
 
 label.form-label {
-    color: var(--tertiary); 
+    color: var(--tertiary);
 }
 
 input.form-control {
-    background-color: var(--primary); 
-    border-color: var(--tertiary); 
+    background-color: var(--primary);
+    border-color: var(--tertiary);
     color: var(--quaternary);
 }
+
 input.form-control:focus {
     background-color: var(--primary);
-    border-color: var(--tertiary); 
-    color: var(--quaternary); 
+    border-color: var(--tertiary);
+    color: var(--quaternary);
     box-shadow: 0 0 0 0.2rem rgba(234, 84, 85, 0.25);
 }
 
 //  Button
 button.btn-primary {
-    background-color: var(--primary); 
-    color: var(--tertiary); 
+    background-color: var(--primary);
+    color: var(--tertiary);
 }
+
 button.btn-primary:hover {
     background-color: var(--secondary);
-    color: var(--tertiary); 
+    color: var(--tertiary);
 }
+
 button.btn-primary:focus {
-    background-color: var(--tertiary); 
-    color: var(--quaternary); 
+    background-color: var(--tertiary);
+    color: var(--quaternary);
     box-shadow: 0 0 0 0.2rem rgba(234, 84, 85, 0.25);
 }
 
 button.btn-primary:focus:active {
-    background-color: var(--tertiary); 
-    color: var(--quaternary); 
+    background-color: var(--tertiary);
+    color: var(--quaternary);
     box-shadow: 0 0 0 0.2rem rgba(234, 84, 85, 0.25);
 }
 //nav
 #navBrand, a.nav-link:hover, a.nav-link:focus {
-    color: var(--tertiary); 
+    color: var(--tertiary);
 }
 
 a.nav-link {
-    color: var(--quaternary); 
+    color: var(--quaternary);
 }
 
+//card
+div.card {
+    background-color: var(--primary);
+}
+
+//header
+h2 {
+    color: var(--tertiary);
+}
+
+h2.Cafe-Name {
+    color: var(--quaternary);
+}
+
+.row-Cafe-Name {
+    background-color: var(--primary);
+    margin: 20px
+}
+//Progress bar
+.Progress-Bar-Container {
+    
+}
 
 @media only screen and (max-width: 600px) {
     a.navbar-brand {
@@ -69,8 +95,8 @@ a.nav-link {
         margin-right: auto;
         width: 150px;
     }
-    
-   li.nav-item{
-       display:none;
-   }
+
+    li.nav-item {
+        display: none;
+    }
 }
