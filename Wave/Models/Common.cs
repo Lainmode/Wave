@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace Wave.Models
@@ -93,37 +97,5 @@ namespace Wave.Models
                 .Substring(0, 22);
             return modifiedBase64;
         }
-    }
-
-    public enum ResponseCode
-    {
-        // Successes starting with 1x
-        OTPRequestSuccessful = 10,
-        OTPVerificationSuccessful = 11,
-
-        RequestFulfilled = 12,
-
-        // Loyalty concerns
-        LoyaltyPointAdded = 15,
-        LoyaltyPointsModified = 16,
-        LoyaltyPointsReset = 17,
-
-        // idk
-        Banned = 80,
-
-        // Errors starting with 2x
-        UnknownError = 20,
-        ExceededMaximumOTPRequests = 23,
-        IncorrectOTP = 24,
-        ExceededMaximumOTPSubmissions = 25,
-
-        // Informational
-        Information = 45
-    }
-
-    public enum Action
-    {
-        Passive = 0,
-        Redirect = 1
     }
 }

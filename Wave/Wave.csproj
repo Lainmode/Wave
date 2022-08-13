@@ -289,10 +289,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Action.cs" />
+    <Compile Include="Models\AesOperation.cs" />
     <Compile Include="Models\Common.cs" />
     <Compile Include="Models\Customer.cs">
       <DependentUpon>WaveDb.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ResponseCode.cs" />
     <Compile Include="Models\Scan.cs">
       <DependentUpon>WaveDb.tt</DependentUpon>
     </Compile>
