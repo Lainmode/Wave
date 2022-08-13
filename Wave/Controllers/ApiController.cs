@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -16,31 +18,42 @@ namespace Wave.Controllers
     public class ApiController : Controller
     {
         // GET: Api
-        [HttpPost]
+        [HttpPost] 
+        [AllowAnonymous] 
+        //[ValidateAntiForgeryToken]
         public async Task<JsonResult> SetOTP(string phoneNumber)
         {
-            Session["PhoneNumber"] = phoneNumber;
-            Random random = new Random();
-            if((Session["OTPSendRequests"] != null && (int)Session["OTPSendRequests"] < 3) || Session["OTPSendRequests"] == null)
+            HttpCookie userInfo = new HttpCookie("userInfo");
+            userInfo["PhoneNumber"] = phoneNumber;
+            userInfo.Expires.Add(new TimeSpan(15000,0,0,0));
+            
+                        Random random = new Random();
+            if((userInfo["OTPSendRequests"] != null && int.Parse(userInfo["OTPSendRequests"]) < 3) || userInfo["OTPSendRequests"] == null)
             {
                 string otp = random.Next(1000, 10000).ToString(); // generates otp between 100k and 1mil (no 000001)
-                Session["OTP"] = otp;
-                Session["OTPSendRequests"] = Session["OTPSendRequests"] != null ? (int)Session["OTPSendRequests"]  + 1 : 1;
+                userInfo["OTP"] = otp;
+                userInfo["OTPSendRequests"] = userInfo["OTPSendRequests"] != null ? (int.Parse(userInfo["OTPSendRequests"])  + 1).ToString() : "1";
                 // Send OTP to phone code goes here
                 await Common.SendOTPMessage(phoneNumber, otp);
+                userInfo.Value = AesOperation.EncryptString(AesOperation.key, userInfo.Value);
+                Response.Cookies.Add(userInfo);
                 return Json(Common.BuildGeneralResponseJson(true, ResponseCode.OTPRequestSuccessful, "OTP Sent!"));
             }
-
+            userInfo.Value = AesOperation.EncryptString(AesOperation.key, userInfo.Value);
+            Response.Cookies.Add(userInfo);
             return Json(Common.BuildGeneralResponseJson(false, ResponseCode.ExceededMaximumOTPRequests, "Exceeded maximum tries, please try again in 1 hour."));
         }
 
         [HttpPost]
+        [AllowAnonymous]
+        //[ValidateAntiForgeryToken]
         public ActionResult SubmitOTP(string otp)
         {
-            string phoneNumber = (string)Session["PhoneNumber"];
-            if ((Session["OTPSubmitTries"] != null && (int)Session["OTPSubmitTries"] < 3) || Session["OTPSubmitTries"] == null)
+            HttpCookie userInfo = Request.Cookies["userInfo"];
+            string phoneNumber = (string)userInfo["PhoneNumber"];
+            if ((userInfo["OTPSubmitTries"] != null && int.Parse(userInfo["OTPSubmitTries"]) < 3) || userInfo["OTPSubmitTries"] == null)
             {
-                if (otp == (string)Session["OTP"])
+                if (otp == (string)userInfo["OTP"])
                 {
                     // register phone here and create all the stuff uknow 
                     // incomplete it does absolutely nothing rn
@@ -56,9 +69,14 @@ namespace Wave.Controllers
                         customer = db.Customers.Where(e => e.PhoneNumber == phoneNumber).FirstOrDefault();
                         FormsAuthentication.SetAuthCookie(phoneNumber, true);
                     }
+                    userInfo.Value = AesOperation.EncryptString(AesOperation.key, userInfo.Value);
+                    Response.Cookies.Add(userInfo);
+                    
                     return Json(Common.BuildGeneralResponseJson(true, ResponseCode.OTPVerificationSuccessful, "Phone number verified!", "http://localhost/User?guid=" + customer.LoyaltyCardGUID));
                 }
-                Session["OTPSubmitTries"] = Session["OTPSubmitTries"] != null ? (int)Session["OTPSubmitTries"] + 1 : 1;
+                userInfo["OTPSubmitTries"] = userInfo["OTPSubmitTries"] != null ? (int.Parse(userInfo["OTPSubmitTries"]) + 1).ToString() : "1";
+                userInfo.Value = AesOperation.EncryptString(AesOperation.key, userInfo.Value);
+                Response.Cookies.Add(userInfo);
                 return Json(Common.BuildGeneralResponseJson(false, ResponseCode.IncorrectOTP, "Incorrect OTP!"));
             }
             return Json(Common.BuildGeneralResponseJson(false, ResponseCode.ExceededMaximumOTPSubmissions, "Exceeded maximum tries, please try again in 1 hour."));
@@ -76,11 +94,11 @@ namespace Wave.Controllers
 
             else
             {
-                return Json(Common.BuildGeneralResponseJson(false, ResponseCode.UnknownError, "Customer does not exist!"));
+                return Json(Common.BuildGeneralResponseJson(false, ResponseCode.GeneralError, "Customer does not exist!"));
             }
         }
 
-        [HttpPost]
+        [HttpPost] [Authorize]
         public JsonResult ModifyLoyaltyPoints(string loyaltyCardGUID, int newValue)
         {
             if(newValue <= 6)
@@ -95,7 +113,7 @@ namespace Wave.Controllers
             }
             else
             {
-                return Json(Common.BuildGeneralResponseJson(false, ResponseCode.UnknownError, "New value is greater than the maximum amount allowed."));
+                return Json(Common.BuildGeneralResponseJson(false, ResponseCode.GeneralError, "New value is greater than the maximum amount allowed."));
             }
         }
 
@@ -209,6 +227,8 @@ namespace Wave.Controllers
                     .Substring(0, 22);
                 return modifiedBase64;
             }
+
+
         }
 
         public enum ResponseCode
@@ -228,7 +248,7 @@ namespace Wave.Controllers
             Banned = 80,
 
             // Errors starting with 2x
-            UnknownError = 20,
+            GeneralError = 20,
             ExceededMaximumOTPRequests = 23,
             IncorrectOTP = 24,
             ExceededMaximumOTPSubmissions = 25,
@@ -241,6 +261,63 @@ namespace Wave.Controllers
         {
             Passive = 0,
             Redirect = 1
+        }
+
+        public class AesOperation
+        {
+            public static string key = "*G-KaPdSgUkXp2s5v8y/B?E(H+MbQeTh";
+            public static string EncryptString(string key, string plainText)
+            {
+                byte[] iv = new byte[16];
+                byte[] array;
+
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = Encoding.UTF8.GetBytes(key);
+                    aes.IV = iv;
+
+                    ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, encryptor, CryptoStreamMode.Write))
+                        {
+                            using (StreamWriter streamWriter = new StreamWriter((Stream)cryptoStream))
+                            {
+                                streamWriter.Write(plainText);
+                            }
+
+                            array = memoryStream.ToArray();
+                        }
+                    }
+                }
+
+                return Convert.ToBase64String(array);
+            }
+
+            public static string DecryptString(string key, string cipherText)
+            {
+                byte[] iv = new byte[16];
+                byte[] buffer = Convert.FromBase64String(cipherText);
+
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = Encoding.UTF8.GetBytes(key);
+                    aes.IV = iv;
+                    ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+                    using (MemoryStream memoryStream = new MemoryStream(buffer))
+                    {
+                        using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, decryptor, CryptoStreamMode.Read))
+                        {
+                            using (StreamReader streamReader = new StreamReader((Stream)cryptoStream))
+                            {
+                                return streamReader.ReadToEnd();
+                            }
+                        }
+                    }
+                }
+            }
         }
 
     }
