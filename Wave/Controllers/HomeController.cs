@@ -10,6 +10,8 @@ namespace Wave.Controllers
     {
         public ActionResult Index()
         {
+            HttpCookie userInfo = new HttpCookie("userInfo");
+            userInfo.Expires.Add(new TimeSpan(15000, 0, 0, 0));
             return View();
         }
     }

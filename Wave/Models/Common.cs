@@ -19,8 +19,6 @@ namespace Wave.Models
 
         private static readonly string senderPhoneNumber = "+19379153188";
 
-        private static string infobipApiKey = "f48ba2d5b6a877c612a7cc37884d4b7a-520bb560-ab4e-4f89-bb37-9f47b91b2557";
-        private static string infobipUrl = "https://mp62k2.api.infobip.com";
         public static object BuildGeneralResponseJson(bool isSuccess, ResponseCode responseCode, string message)
         {
             return new { success = isSuccess, code = (int)responseCode, message = message, action = Action.Passive };
@@ -43,7 +41,7 @@ namespace Wave.Models
 
             TwilioClient.Init(accountSid, authToken);
 
-            var to = new PhoneNumber(phoneNumber);
+            var to = new PhoneNumber("+" + phoneNumber);
             var from = new PhoneNumber(senderPhoneNumber);
 
             MessageResource.Create(

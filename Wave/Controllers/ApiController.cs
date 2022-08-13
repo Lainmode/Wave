@@ -12,6 +12,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using Wave.Models;
+using System.Linq;
 
 namespace Wave.Controllers
 {
@@ -19,15 +20,16 @@ namespace Wave.Controllers
     {
         // GET: Api
         [HttpPost] 
-        [AllowAnonymous] 
         //[ValidateAntiForgeryToken]
         public async Task<JsonResult> SetOTP(string phoneNumber)
         {
-            HttpCookie userInfo = new HttpCookie("userInfo");
+            if (!Request.Cookies.AllKeys.Contains("userInfo"))
+            {
+                return Json(Common.BuildGeneralResponseJson(false, ResponseCode.GeneralError, "Session expired!", "https://localhost:44362/"));
+            }
+            HttpCookie userInfo = Request.Cookies.Get("userInfo");
             userInfo["PhoneNumber"] = phoneNumber;
-            userInfo.Expires.Add(new TimeSpan(15000,0,0,0));
-            
-                        Random random = new Random();
+            Random random = new Random();
             if((userInfo["OTPSendRequests"] != null && int.Parse(userInfo["OTPSendRequests"]) < 3) || userInfo["OTPSendRequests"] == null)
             {
                 string otp = random.Next(1000, 10000).ToString(); // generates otp between 100k and 1mil (no 000001)
@@ -49,7 +51,11 @@ namespace Wave.Controllers
         //[ValidateAntiForgeryToken]
         public ActionResult SubmitOTP(string otp)
         {
-            HttpCookie userInfo = Request.Cookies["userInfo"];
+            if (!Request.Cookies.AllKeys.Contains("userInfo"))
+            {
+                return Json(Common.BuildGeneralResponseJson(false, ResponseCode.GeneralError, "Session expired!", "https://localhost:44362/"));
+            }
+            HttpCookie userInfo = Request.Cookies.Get("userInfo");
             string phoneNumber = (string)userInfo["PhoneNumber"];
             if ((userInfo["OTPSubmitTries"] != null && int.Parse(userInfo["OTPSubmitTries"]) < 3) || userInfo["OTPSubmitTries"] == null)
             {

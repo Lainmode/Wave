@@ -371,6 +371,7 @@
     <Compile Include="Models\Scan.cs">
       <DependentUpon>WaveDb.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\WaveAuth.cs" />
     <Compile Include="Models\WaveDb.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
