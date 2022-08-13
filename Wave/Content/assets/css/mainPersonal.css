@@ -78,6 +78,28 @@ h2.Cafe-Name {
   margin: 20px;
 }
 
+.Progress-Bar-Container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+path {
+  stroke-linecap: round;
+  stroke-width: 12;
+}
+
+.bar-bg {
+  stroke: #FDE9C9;
+}
+
+.bar {
+  stroke: #F1732C;
+  stroke-dasharray: 248;
+  stroke-dashoffset: 185.008;
+  transition: stroke-dashoffset 1s linear;
+}
+
 @media only screen and (max-width: 600px) {
   a.navbar-brand {
     margin-left: auto;

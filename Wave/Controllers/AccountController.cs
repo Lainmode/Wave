@@ -26,6 +26,7 @@ namespace Wave.Controllers
 
         public ActionResult LoyaltyCard() 
         {
+
             return View(); 
         }
 
