@@ -34,7 +34,7 @@ namespace Wave.Controllers
                 userInfo["OTP"] = otp;
                 userInfo["OTPSendRequests"] = userInfo["OTPSendRequests"] != null ? (int.Parse(userInfo["OTPSendRequests"])  + 1).ToString() : "1";
                 // Send OTP to phone code goes here
-                await Common.SendOTPMessage(phoneNumber, otp);
+                Common.SendOTPMessage(phoneNumber, otp);
                 userInfo.Value = AesOperation.EncryptString(AesOperation.key, userInfo.Value);
                 Response.Cookies.Add(userInfo);
                 return Json(Common.BuildGeneralResponseJson(true, ResponseCode.OTPRequestSuccessful, "OTP Sent!"));

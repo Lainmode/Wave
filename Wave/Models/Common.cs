@@ -6,11 +6,19 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
+using Twilio.Types;
 
 namespace Wave.Models
 {
     public class Common
     {
+        private static readonly string accountSid = "AC6be402bc56f34c7e071d91a8a9e71b25";
+        private static readonly string authToken = "408f35c09e5acde870efb504bd2ce5b8";
+
+        private static readonly string senderPhoneNumber = "+19379153188";
+
         private static string infobipApiKey = "f48ba2d5b6a877c612a7cc37884d4b7a-520bb560-ab4e-4f89-bb37-9f47b91b2557";
         private static string infobipUrl = "https://mp62k2.api.infobip.com";
         public static object BuildGeneralResponseJson(bool isSuccess, ResponseCode responseCode, string message)
@@ -29,34 +37,20 @@ namespace Wave.Models
         }
 
 
-        public static async Task SendOTPMessage(string phoneNumber, string otp)
+        public static void SendOTPMessage(string phoneNumber, string otp)
         {
-            using (HttpClient httpClient = new HttpClient())
-            {
-                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("App", infobipApiKey);
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                string message = $@"
-                    {{
-                        ""messages"": [
-                        {{
-                            ""from"": ""Doppio Test"",
-                            ""destinations"":
-                            [
-                                {{
-                                    ""to"": ""{phoneNumber}""
-                                }}
-                          ],
-                          ""text"": ""Your one time password for Doppio is: {otp}""
-                        }}
-                      ]
-                    }}";
+            string body = "Your one time password for Doppio is: " + otp;
 
-                var content = new StringContent(message, Encoding.UTF8, "application/json");
+            TwilioClient.Init(accountSid, authToken);
 
-                var response = await httpClient.PostAsync(infobipUrl + "/sms/2/text/advanced", content);
-                var responseContent = await response.Content.ReadAsStringAsync();
+            var to = new PhoneNumber(phoneNumber);
+            var from = new PhoneNumber(senderPhoneNumber);
 
-            }
+            MessageResource.Create(
+                to: to,
+                from: from,
+                body: body
+                );
 
         }
 
