@@ -13,15 +13,20 @@ namespace Wave.Controllers
     {
         public SessionData sessionData;
         public WaveEntities db = new WaveEntities();
-        public bool IsAdmin = false;
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             Common.Log(filterContext, db); // Log the request
 
             if (Request.Cookies.AllKeys.Contains("WaveSession"))
+            {
                 filterContext.Result = RedirectToAction("Index");
+                return;
+            }
             if (Session["SessionData"] == null)
-                filterContext.Result = RedirectToAction("Index", "authorization");
+            {
+                filterContext.Result = RedirectToAction("SignUp", "Authorization");
+                return;
+            }
 
             sessionData = (SessionData)Session["SessionData"];
             base.OnActionExecuting(filterContext);
@@ -81,7 +86,7 @@ namespace Wave.Controllers
                     cookie.Expires = DateTime.Now.AddYears(50);
                     cookie.Value = AesOperation.EncryptString(AesOperation.key, customer.Cookie);
                     Response.Cookies.Add(cookie);
-                    return Json(Common.BuildGeneralResponseJson(true, ResponseCode.OTPVerificationSuccessful, "Phone number verified!", "http://localhost/User?guid=" + customer.LoyaltyCardGUID));
+                    return Json(Common.BuildGeneralResponseJson(true, ResponseCode.OTPVerificationSuccessful, "Phone number verified!", "http://localhost/Index"));
                 }
                 sessionData.SubmitOTPAttempts++;
                 return Json(Common.BuildGeneralResponseJson(false, ResponseCode.IncorrectOTP, "Incorrect OTP!"));

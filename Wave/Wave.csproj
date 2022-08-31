@@ -467,7 +467,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Api\" />
-    <Folder Include="Views\Authorization\" />
     <Folder Include="Views\Manage\" />
     <Folder Include="Views\Twilio\" />
   </ItemGroup>
@@ -481,6 +480,7 @@
     </Content>
     <None Include="packages.config" />
     <Content Include="Views\Base\Index.cshtml" />
+    <Content Include="Views\Authorization\SignUp.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

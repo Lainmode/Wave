@@ -15,7 +15,7 @@ namespace Wave
 
             routes.MapRoute(
                 name: "Default",
-                url: "{action}/{id}",
+                url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Base", action = "Index", id = UrlParameter.Optional }
             );
 
