@@ -1,48 +1,46 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using Wave.Models;
-using System.Linq;
 
 namespace Wave.Controllers
 {
     public class ApiController : Controller
     {
-        // GET: Api
-        [HttpPost] 
-        //[ValidateAntiForgeryToken]
-        public async Task<JsonResult> SetOTP(string phoneNumber)
+        public SessionData sessionData;
+        public WaveEntities db = new WaveEntities();
+        public bool IsAdmin = false;
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if (!Request.Cookies.AllKeys.Contains("userInfo"))
+            Common.Log(filterContext, db); // Log the request
+
+            if (Request.Cookies.AllKeys.Contains("WaveSession"))
+                filterContext.Result = RedirectToAction("Index");
+            if (Session["SessionData"] == null)
+                filterContext.Result = RedirectToAction("Index", "authorization");
+
+            sessionData = (SessionData)Session["SessionData"];
+            base.OnActionExecuting(filterContext);
+        }
+        // GET: Api
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public JsonResult SetOTP(string phoneNumber)
+        {
+            if ((sessionData.RequestOTPAttemps < 3))
             {
-                return Json(Common.BuildGeneralResponseJson(false, ResponseCode.GeneralError, "Session expired!", "https://localhost:44362/"));
-            }
-            HttpCookie userInfo = Request.Cookies.Get("userInfo");
-            userInfo["PhoneNumber"] = phoneNumber;
-            Random random = new Random();
-            if((userInfo["OTPSendRequests"] != null && int.Parse(userInfo["OTPSendRequests"]) < 3) || userInfo["OTPSendRequests"] == null)
-            {
+                Random random = new Random();
                 string otp = random.Next(1000, 10000).ToString(); // generates otp between 100k and 1mil (no 000001)
-                userInfo["OTP"] = otp;
-                userInfo["OTPSendRequests"] = userInfo["OTPSendRequests"] != null ? (int.Parse(userInfo["OTPSendRequests"])  + 1).ToString() : "1";
+                sessionData.OTP = otp;
+                sessionData.RequestOTPAttemps++;
                 // Send OTP to phone code goes here
                 Common.SendOTPMessage(phoneNumber, otp);
-                userInfo.Value = AesOperation.EncryptString(AesOperation.key, userInfo.Value);
-                Response.Cookies.Add(userInfo);
                 return Json(Common.BuildGeneralResponseJson(true, ResponseCode.OTPRequestSuccessful, "OTP Sent!"));
             }
-            userInfo.Value = AesOperation.EncryptString(AesOperation.key, userInfo.Value);
-            Response.Cookies.Add(userInfo);
             return Json(Common.BuildGeneralResponseJson(false, ResponseCode.ExceededMaximumOTPRequests, "Exceeded maximum tries, please try again in 1 hour."));
         }
 
@@ -51,47 +49,48 @@ namespace Wave.Controllers
         //[ValidateAntiForgeryToken]
         public ActionResult SubmitOTP(string otp)
         {
-            if (!Request.Cookies.AllKeys.Contains("userInfo"))
+            if (sessionData.SubmitOTPAttempts < 3 && sessionData.SubmitOTPCooldown < DateTime.Now)
             {
-                return Json(Common.BuildGeneralResponseJson(false, ResponseCode.GeneralError, "Session expired!", "https://localhost:44362/"));
-            }
-            HttpCookie userInfo = Request.Cookies.Get("userInfo");
-            string phoneNumber = (string)userInfo["PhoneNumber"];
-            if ((userInfo["OTPSubmitTries"] != null && int.Parse(userInfo["OTPSubmitTries"]) < 3) || userInfo["OTPSubmitTries"] == null)
-            {
-                if (otp == (string)userInfo["OTP"])
+                if (otp == sessionData.OTP)
                 {
                     // register phone here and create all the stuff uknow 
                     // incomplete it does absolutely nothing rn
                     Customer customer;
-                    if (!Common.CheckIfPhoneNumberAlreadyRegistered(phoneNumber)) 
+                    if (!Common.CheckIfPhoneNumberAlreadyRegistered(sessionData.PhoneNumber)) 
                     {
-                        customer = Common.AddNewCustomer(phoneNumber);
-                        FormsAuthentication.SetAuthCookie(phoneNumber, true);
+                        customer = Common.AddNewCustomer(sessionData.PhoneNumber);
+                        FormsAuthentication.SetAuthCookie(sessionData.PhoneNumber, true);
                     }
                     else
                     {
-                        WaveEntities db = new WaveEntities();
-                        customer = db.Customers.Where(e => e.PhoneNumber == phoneNumber).FirstOrDefault();
-                        FormsAuthentication.SetAuthCookie(phoneNumber, true);
+                        customer = db.Customers.Where(e => e.PhoneNumber == sessionData.PhoneNumber).FirstOrDefault();
                     }
-                    userInfo.Value = AesOperation.EncryptString(AesOperation.key, userInfo.Value);
-                    Response.Cookies.Add(userInfo);
-                    
+                    HttpCookie cookie = new HttpCookie("WaveSession");
+                    cookie.Expires = DateTime.Now.AddYears(50);
+                    cookie.Value = AesOperation.EncryptString(AesOperation.key, customer.Cookie);
+                    Response.Cookies.Add(cookie);
                     return Json(Common.BuildGeneralResponseJson(true, ResponseCode.OTPVerificationSuccessful, "Phone number verified!", "http://localhost/User?guid=" + customer.LoyaltyCardGUID));
                 }
-                userInfo["OTPSubmitTries"] = userInfo["OTPSubmitTries"] != null ? (int.Parse(userInfo["OTPSubmitTries"]) + 1).ToString() : "1";
-                userInfo.Value = AesOperation.EncryptString(AesOperation.key, userInfo.Value);
-                Response.Cookies.Add(userInfo);
+                sessionData.SubmitOTPAttempts++;
                 return Json(Common.BuildGeneralResponseJson(false, ResponseCode.IncorrectOTP, "Incorrect OTP!"));
             }
+            else
+            {
+                if(sessionData.SubmitOTPCooldown != new DateTime())
+                {
+                    sessionData.SubmitOTPCooldown = DateTime.Now.AddHours(1);
+                }
+                sessionData.IsSubmitOTPRestricted = true;
+                sessionData.SubmitOTPAttempts = 0;
+            }
+
             return Json(Common.BuildGeneralResponseJson(false, ResponseCode.ExceededMaximumOTPSubmissions, "Exceeded maximum tries, please try again in 1 hour."));
         }
 
         [HttpPost]
         public JsonResult RetrieveCustomerInformation(string loyaltyCardGUID)
         {
-            WaveEntities db = new WaveEntities();
+            
             Customer customer = db.Customers.Where(e => e.LoyaltyCardGUID == loyaltyCardGUID).FirstOrDefault();
             if(customer != null)
             {
@@ -109,7 +108,6 @@ namespace Wave.Controllers
         {
             if(newValue <= 6)
             {
-                WaveEntities db = new WaveEntities();
                 Customer customer = db.Customers.Where(e => e.LoyaltyCardGUID == loyaltyCardGUID).FirstOrDefault();
                 customer.LoyaltyPoints = newValue;
                 customer.Scans.Add(new Scan() { ScanDate = DateTime.Now });
@@ -125,7 +123,6 @@ namespace Wave.Controllers
 
         public JsonResult BanUser(string loyaltyCardGUID)
         {
-            WaveEntities db = new WaveEntities();
             Customer customer = db.Customers.Where(e => e.LoyaltyCardGUID == loyaltyCardGUID).FirstOrDefault();
             customer.IsActive = false;
             customer.IsBanned = true;
@@ -136,7 +133,6 @@ namespace Wave.Controllers
 
         public JsonResult UnbanUser(string loyaltyCardGUID)
         {
-            WaveEntities db = new WaveEntities();
             Customer customer = db.Customers.Where(e => e.LoyaltyCardGUID == loyaltyCardGUID).FirstOrDefault();
             customer.IsActive = true;
             customer.IsBanned = false;
@@ -144,8 +140,6 @@ namespace Wave.Controllers
             db.SaveChanges();
             return Json(Common.BuildGeneralResponseJson(true, ResponseCode.RequestFulfilled, "Successfully unbanned user."));
         }
-
-
 
     }
 }

@@ -9,12 +9,22 @@
           <Key>
             <PropertyRef Name="CustomerID" />
           </Key>
-          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="CustomerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PhoneNumber" Type="nvarchar(max)" />
           <Property Name="LoyaltyCardGUID" Type="nvarchar(max)" />
           <Property Name="LoyaltyPoints" Type="int" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsBanned" Type="bit" Nullable="false" />
+          <Property Name="Cookie" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Handshakes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="IPAddress" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="TimeStamp" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Directory" Type="nvarchar(max)" Nullable="false" />
         </EntityType>
         <EntityType Name="Scans">
           <Key>
@@ -38,6 +48,7 @@
         </Association>
         <EntityContainer Name="WaveModelStoreContainer">
           <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Handshakes" EntityType="Self.Handshakes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Scans" EntityType="Self.Scans" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Scans_Scans" Association="Self.FK_Scans_Scans">
             <End Role="Customers" EntitySet="Customers" />
@@ -59,6 +70,7 @@
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <Property Name="IsBanned" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Scans" Relationship="Self.FK_Scans_Scans" FromRole="Customers" ToRole="Scans" />
+          <Property Name="Cookie" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Scan">
           <Key>
@@ -88,7 +100,17 @@
             <End Role="Customers" EntitySet="Customers" />
             <End Role="Scans" EntitySet="Scans" />
           </AssociationSet>
+          <EntitySet Name="Handshakes" EntityType="WaveModel.Handshake" />
         </EntityContainer>
+        <EntityType Name="Handshake">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="IPAddress" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TimeStamp" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Directory" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -98,6 +120,7 @@
           <EntitySetMapping Name="Customers">
             <EntityTypeMapping TypeName="WaveModel.Customer">
               <MappingFragment StoreEntitySet="Customers">
+                <ScalarProperty Name="Cookie" ColumnName="Cookie" />
                 <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
                 <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
                 <ScalarProperty Name="LoyaltyCardGUID" ColumnName="LoyaltyCardGUID" />
@@ -113,6 +136,16 @@
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
                 <ScalarProperty Name="ScanDate" ColumnName="ScanDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Handshakes">
+            <EntityTypeMapping TypeName="WaveModel.Handshake">
+              <MappingFragment StoreEntitySet="Handshakes">
+                <ScalarProperty Name="Directory" ColumnName="Directory" />
+                <ScalarProperty Name="TimeStamp" ColumnName="TimeStamp" />
+                <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

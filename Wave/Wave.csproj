@@ -357,7 +357,8 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\ApiController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\AuthorizationController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -367,11 +368,14 @@
     <Compile Include="Models\Customer.cs">
       <DependentUpon>WaveDb.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Handshake.cs">
+      <DependentUpon>WaveDb.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ResponseCode.cs" />
     <Compile Include="Models\Scan.cs">
       <DependentUpon>WaveDb.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\WaveAuth.cs" />
+    <Compile Include="Models\SessionData.cs" />
     <Compile Include="Models\WaveDb.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -463,6 +467,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Api\" />
+    <Folder Include="Views\Authorization\" />
     <Folder Include="Views\Manage\" />
     <Folder Include="Views\Twilio\" />
   </ItemGroup>
@@ -475,6 +480,7 @@
       <DependentUpon>WaveDb.edmx</DependentUpon>
     </Content>
     <None Include="packages.config" />
+    <Content Include="Views\Base\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

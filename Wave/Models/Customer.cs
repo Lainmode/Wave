@@ -26,6 +26,7 @@ namespace Wave.Models
         public int LoyaltyPoints { get; set; }
         public bool IsActive { get; set; }
         public bool IsBanned { get; set; }
+        public string Cookie { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Scan> Scans { get; set; }

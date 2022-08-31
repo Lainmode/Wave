@@ -6,11 +6,10 @@
     <edmx:Diagrams>
       <Diagram DiagramId="5b89c26ba82d4e61b0aa31c22f6e80ca" Name="Diagram1">
         <EntityTypeShape EntityType="WaveModel.Customer" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="WaveModel.Scan" Width="1.5" PointX="3.75" PointY="1.25" IsExpanded="true" />
-        <AssociationConnector Association="WaveModel.FK_Scans_Scans" ManuallyRouted="true" >
-          <ConnectorPoint PointX="2.25" PointY="2.1439925130208337" />
-          <ConnectorPoint PointX="3.75" PointY="2.1439925130208337" />
+        <EntityTypeShape EntityType="WaveModel.Scan" Width="1.5" PointX="4" PointY="0.875" IsExpanded="true" />
+        <AssociationConnector Association="WaveModel.FK_Scans_Scans" ManuallyRouted="false" >
         </AssociationConnector>
+        <EntityTypeShape EntityType="WaveModel.Handshake" Width="1.5" PointX="3.375" PointY="3.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

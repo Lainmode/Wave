@@ -27,5 +27,6 @@ namespace Wave.Models
     
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Scan> Scans { get; set; }
+        public virtual DbSet<Handshake> Handshakes { get; set; }
     }
 }
