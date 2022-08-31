@@ -31,9 +31,10 @@ namespace Wave.Controllers
         //[ValidateAntiForgeryToken]
         public JsonResult SetOTP(string phoneNumber)
         {
-            if ((sessionData.RequestOTPAttemps < 3))
+            if ((sessionData.RequestOTPAttemps < 3 && sessionData.RequestOTPCooldown < DateTime.Now))
             {
                 Random random = new Random();
+                sessionData.IsRequestOTPRestricted = false;
                 string otp = random.Next(1000, 10000).ToString(); // generates otp between 100k and 1mil (no 000001)
                 sessionData.OTP = otp;
                 sessionData.RequestOTPAttemps++;
@@ -41,7 +42,17 @@ namespace Wave.Controllers
                 Common.SendOTPMessage(phoneNumber, otp);
                 return Json(Common.BuildGeneralResponseJson(true, ResponseCode.OTPRequestSuccessful, "OTP Sent!"));
             }
-            return Json(Common.BuildGeneralResponseJson(false, ResponseCode.ExceededMaximumOTPRequests, "Exceeded maximum tries, please try again in 1 hour."));
+            else
+            {
+                if (sessionData.RequestOTPCooldown != new DateTime())
+                {
+                    sessionData.RequestOTPCooldown = DateTime.Now.AddHours(1);
+                }
+                sessionData.IsRequestOTPRestricted = true;
+                sessionData.RequestOTPAttemps = 0;
+            }
+
+            return Json(Common.BuildGeneralResponseJson(false, ResponseCode.ExceededMaximumOTPRequests, "Exceeded maximum tries, please try again in" + (DateTime.Now - sessionData.RequestOTPCooldown).ToString("MM:ss")));
         }
 
         [HttpPost]
@@ -51,6 +62,7 @@ namespace Wave.Controllers
         {
             if (sessionData.SubmitOTPAttempts < 3 && sessionData.SubmitOTPCooldown < DateTime.Now)
             {
+                sessionData.IsSubmitOTPRestricted = false;
                 if (otp == sessionData.OTP)
                 {
                     // register phone here and create all the stuff uknow 
@@ -84,14 +96,15 @@ namespace Wave.Controllers
                 sessionData.SubmitOTPAttempts = 0;
             }
 
-            return Json(Common.BuildGeneralResponseJson(false, ResponseCode.ExceededMaximumOTPSubmissions, "Exceeded maximum tries, please try again in 1 hour."));
+            return Json(Common.BuildGeneralResponseJson(false, ResponseCode.ExceededMaximumOTPSubmissions, "Exceeded maximum tries, please try again in" + (DateTime.Now - sessionData.SubmitOTPCooldown).ToString("MM:ss")));
         }
 
         [HttpPost]
-        public JsonResult RetrieveCustomerInformation(string loyaltyCardGUID)
+        public JsonResult RetrieveCustomerInformation()
         {
-            
-            Customer customer = db.Customers.Where(e => e.LoyaltyCardGUID == loyaltyCardGUID).FirstOrDefault();
+            var cookie = Request.Cookies.Get("WaveSession");
+            string cookieValue = AesOperation.DecryptString(AesOperation.key, cookie.Value);
+            Customer customer = db.Customers.Where(e => e.Cookie == cookieValue).FirstOrDefault();
             if(customer != null)
             {
                 return Json(Common.BuildDataResponseJson(true, ResponseCode.RequestFulfilled, "Successfully retrieved data.", JsonConvert.SerializeObject(customer)));
