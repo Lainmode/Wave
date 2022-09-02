@@ -28,22 +28,34 @@ namespace Wave.Controllers
         // GET: Base
         public ActionResult Index()
         {
+            string cookieValue = AesOperation.DecryptString(AesOperation.key, cookie.Value);
+            Customer customer = db.Customers.Where(e => e.Cookie == cookieValue).FirstOrDefault();
+            if (customer != null)
+            {
+                ViewBag.Customer = customer;
+            }
+
+            else
+            {
+                cookie.Expires = DateTime.Now.AddMonths(-1);
+                Response.AppendCookie(cookie);
+            }
             return View();
         }
 
-        [HttpPost]
+        [HttpGet]
         public JsonResult RetrieveCustomerInformation()
         {
             string cookieValue = AesOperation.DecryptString(AesOperation.key, cookie.Value);
             Customer customer = db.Customers.Where(e => e.Cookie == cookieValue).FirstOrDefault();
             if (customer != null)
             {
-                return Json(Common.BuildDataResponseJson(true, ResponseCode.RequestFulfilled, "Successfully retrieved data.", JsonConvert.SerializeObject(customer)));
+                return Json(Common.BuildDataResponseJson(true, ResponseCode.RequestFulfilled, "Successfully retrieved data.", JsonConvert.SerializeObject(customer)), JsonRequestBehavior.AllowGet);
             }
 
             else
             {
-                return Json(Common.BuildGeneralResponseJson(false, ResponseCode.GeneralError, "Customer does not exist!"));
+                return Json(Common.BuildGeneralResponseJson(false, ResponseCode.GeneralError, "Customer does not exist!"), JsonRequestBehavior.AllowGet);
             }
         }
     }

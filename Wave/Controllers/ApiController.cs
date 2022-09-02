@@ -35,6 +35,11 @@ namespace Wave.Controllers
         //[ValidateAntiForgeryToken]
         public JsonResult SetOTP(string phoneNumber)
         {
+            if(!Common.IsPhoneNumber(phoneNumber))
+            {
+                return Json(Common.BuildGeneralResponseJson(false, ResponseCode.GeneralError, "INCORRECT PHONE NUMBER"));
+            }
+            sessionData.PhoneNumber = phoneNumber;
             if ((sessionData.RequestOTPAttemps < 3 && sessionData.RequestOTPCooldown < DateTime.Now))
             {
                 Random random = new Random();
@@ -48,7 +53,7 @@ namespace Wave.Controllers
             }
             else
             {
-                if (sessionData.RequestOTPCooldown != new DateTime())
+                if (sessionData.RequestOTPCooldown == new DateTime())
                 {
                     sessionData.RequestOTPCooldown = DateTime.Now.AddHours(1);
                 }
@@ -56,7 +61,7 @@ namespace Wave.Controllers
                 sessionData.RequestOTPAttemps = 0;
             }
 
-            return Json(Common.BuildGeneralResponseJson(false, ResponseCode.ExceededMaximumOTPRequests, "Exceeded maximum tries, please try again in" + (DateTime.Now - sessionData.RequestOTPCooldown).ToString("MM:ss")));
+            return Json(Common.BuildGeneralResponseJson(false, ResponseCode.ExceededMaximumOTPRequests, "Exceeded maximum tries, please try again in: " + (DateTime.Now - sessionData.RequestOTPCooldown).TotalMinutes));
         }
 
         [HttpPost]
@@ -85,14 +90,14 @@ namespace Wave.Controllers
                     cookie.Expires = DateTime.Now.AddYears(50);
                     cookie.Value = AesOperation.EncryptString(AesOperation.key, customer.Cookie);
                     Response.Cookies.Add(cookie);
-                    return Json(Common.BuildGeneralResponseJson(true, ResponseCode.OTPVerificationSuccessful, "Phone number verified!", "http://localhost/Index"));
+                    return Json(Common.BuildGeneralResponseJson(true, ResponseCode.OTPVerificationSuccessful, "Phone number verified!", Url.Action("Index", "Base")));
                 }
                 sessionData.SubmitOTPAttempts++;
                 return Json(Common.BuildGeneralResponseJson(false, ResponseCode.IncorrectOTP, "Incorrect OTP!"));
             }
             else
             {
-                if(sessionData.SubmitOTPCooldown != new DateTime())
+                if(sessionData.SubmitOTPCooldown == new DateTime())
                 {
                     sessionData.SubmitOTPCooldown = DateTime.Now.AddHours(1);
                 }
@@ -100,7 +105,7 @@ namespace Wave.Controllers
                 sessionData.SubmitOTPAttempts = 0;
             }
 
-            return Json(Common.BuildGeneralResponseJson(false, ResponseCode.ExceededMaximumOTPSubmissions, "Exceeded maximum tries, please try again in" + (DateTime.Now - sessionData.SubmitOTPCooldown).ToString("MM:ss")));
+            return Json(Common.BuildGeneralResponseJson(false, ResponseCode.ExceededMaximumOTPSubmissions, "Exceeded maximum tries, please try again in" + (DateTime.Now - sessionData.SubmitOTPCooldown).TotalMinutes));
         }
 
 

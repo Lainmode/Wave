@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -116,6 +117,12 @@ namespace Wave.Models
             var chars = Enumerable.Range(0, length)
                 .Select(x => pool[random.Next(0, pool.Length)]);
             return new string(chars.ToArray());
+        }
+
+        public static bool IsPhoneNumber(string number)
+        {
+            Regex phonePattern = new Regex(@"\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*");
+            return phonePattern.Match(number).Success;
         }
     }
 }

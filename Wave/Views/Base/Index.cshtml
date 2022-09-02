@@ -1,6 +1,39 @@
-﻿@{
+﻿@using Wave.Models;
+@{
     ViewBag.Title = "Index";
+    Customer customer = ViewBag.Customer;
 }
 
-<h2>Index</h2>
+<div>
+    <h2>Index</h2>
+    <!-- <button onclick="getCustomerInfo()">GET INFO</button> -->
+    <div id="customerInfo">
+        <ul>
+            <li>@customer.CustomerID</li>
+            <li>@customer.PhoneNumber</li>
+            <li>@customer.LoyaltyPoints</li>
+            <li>@customer.Scans</li>
+        </ul>
+    </div>
+</div>
 
+<script>
+    function getCustomerInfo() {
+        $.ajax({
+            url: "/base/retrievecustomerinformation",
+            type: "GET",
+            success: function (result) {
+                console.log(result);
+                if (result.success == true) {
+                    $("#customerInfo").html(result.data);
+                }
+                else {
+                    console.log(result.message);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("ERROR: " + errorThrown);
+            }
+        });
+    }
+</script>
