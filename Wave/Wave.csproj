@@ -357,8 +357,9 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\ApiController.cs" />
-    <Compile Include="Controllers\AuthorizationController.cs" />
+    <Compile Include="Controllers\AuthorizeController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -480,7 +481,7 @@
     </Content>
     <None Include="packages.config" />
     <Content Include="Views\Base\Index.cshtml" />
-    <Content Include="Views\Authorization\SignUp.cshtml" />
+    <Content Include="Views\Authorize\SignUp.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

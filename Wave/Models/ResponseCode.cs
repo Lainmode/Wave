@@ -23,6 +23,7 @@
         ExceededMaximumOTPSubmissions = 25,
 
         // Informational
-        Information = 45
+        Information = 45,
+        Timeout = 81
     }
 }

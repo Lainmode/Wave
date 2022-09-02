@@ -16,6 +16,8 @@ namespace Wave.Models
     public class Common
     {
         private static readonly string accountSid = "AC6be402bc56f34c7e071d91a8a9e71b25";
+        public static readonly string CookieName = "4YwowjLPu431d!$Gwc$@9GrIZ4yPrav^$HQ#g2";
+        public static readonly string CookieSecret = "#p^yixb25FGGsq9&IVDZVpX@Qx$Y";
 
         public static void Log(ActionExecutingContext filterContext, WaveEntities db)
         {

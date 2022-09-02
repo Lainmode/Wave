@@ -19,15 +19,14 @@ namespace Wave.Controllers
 
             if (Request.Cookies.AllKeys.Contains("WaveSession"))
             {
-                filterContext.Result = RedirectToAction("Index");
+                filterContext.Result = new JsonResult { Data = Common.BuildGeneralResponseJson(false, ResponseCode.Information, "Redirecting to base", "/Base/Index") };
                 return;
             }
             if (Session["SessionData"] == null)
             {
-                filterContext.Result = RedirectToAction("SignUp", "Authorization");
+                filterContext.Result = new JsonResult { Data = Common.BuildGeneralResponseJson(false, ResponseCode.Information, "Session expired!", "/Authorize/SignUp") };
                 return;
             }
-
             sessionData = (SessionData)Session["SessionData"];
             base.OnActionExecuting(filterContext);
         }
@@ -104,60 +103,7 @@ namespace Wave.Controllers
             return Json(Common.BuildGeneralResponseJson(false, ResponseCode.ExceededMaximumOTPSubmissions, "Exceeded maximum tries, please try again in" + (DateTime.Now - sessionData.SubmitOTPCooldown).ToString("MM:ss")));
         }
 
-        [HttpPost]
-        public JsonResult RetrieveCustomerInformation()
-        {
-            var cookie = Request.Cookies.Get("WaveSession");
-            string cookieValue = AesOperation.DecryptString(AesOperation.key, cookie.Value);
-            Customer customer = db.Customers.Where(e => e.Cookie == cookieValue).FirstOrDefault();
-            if(customer != null)
-            {
-                return Json(Common.BuildDataResponseJson(true, ResponseCode.RequestFulfilled, "Successfully retrieved data.", JsonConvert.SerializeObject(customer)));
-            }
 
-            else
-            {
-                return Json(Common.BuildGeneralResponseJson(false, ResponseCode.GeneralError, "Customer does not exist!"));
-            }
-        }
-
-        [HttpPost] [Authorize]
-        public JsonResult ModifyLoyaltyPoints(string loyaltyCardGUID, int newValue)
-        {
-            if(newValue <= 6)
-            {
-                Customer customer = db.Customers.Where(e => e.LoyaltyCardGUID == loyaltyCardGUID).FirstOrDefault();
-                customer.LoyaltyPoints = newValue;
-                customer.Scans.Add(new Scan() { ScanDate = DateTime.Now });
-                db.Entry(customer).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
-                return Json(Common.BuildGeneralResponseJson(true, ResponseCode.LoyaltyPointsModified, "Successfully modified loyalty points."));
-            }
-            else
-            {
-                return Json(Common.BuildGeneralResponseJson(false, ResponseCode.GeneralError, "New value is greater than the maximum amount allowed."));
-            }
-        }
-
-        public JsonResult BanUser(string loyaltyCardGUID)
-        {
-            Customer customer = db.Customers.Where(e => e.LoyaltyCardGUID == loyaltyCardGUID).FirstOrDefault();
-            customer.IsActive = false;
-            customer.IsBanned = true;
-            db.Entry(customer).State = System.Data.Entity.EntityState.Modified;
-            db.SaveChanges();
-            return Json(Common.BuildGeneralResponseJson(true, ResponseCode.Banned, "Successfully banned user."));
-        }
-
-        public JsonResult UnbanUser(string loyaltyCardGUID)
-        {
-            Customer customer = db.Customers.Where(e => e.LoyaltyCardGUID == loyaltyCardGUID).FirstOrDefault();
-            customer.IsActive = true;
-            customer.IsBanned = false;
-            db.Entry(customer).State = System.Data.Entity.EntityState.Modified;
-            db.SaveChanges();
-            return Json(Common.BuildGeneralResponseJson(true, ResponseCode.RequestFulfilled, "Successfully unbanned user."));
-        }
 
     }
 }

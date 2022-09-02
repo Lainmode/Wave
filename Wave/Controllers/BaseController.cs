@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -17,7 +18,7 @@ namespace Wave.Controllers
 
             if (!Request.Cookies.AllKeys.Contains("WaveSession"))
             {
-                filterContext.Result = RedirectToAction("SignUp", "Authorization");
+                filterContext.Result = Redirect(Url.Action("SignUp", "Authorize"));
                 return;
             }
             cookie = Request.Cookies.Get("WaveSession");
@@ -28,6 +29,22 @@ namespace Wave.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        [HttpPost]
+        public JsonResult RetrieveCustomerInformation()
+        {
+            string cookieValue = AesOperation.DecryptString(AesOperation.key, cookie.Value);
+            Customer customer = db.Customers.Where(e => e.Cookie == cookieValue).FirstOrDefault();
+            if (customer != null)
+            {
+                return Json(Common.BuildDataResponseJson(true, ResponseCode.RequestFulfilled, "Successfully retrieved data.", JsonConvert.SerializeObject(customer)));
+            }
+
+            else
+            {
+                return Json(Common.BuildGeneralResponseJson(false, ResponseCode.GeneralError, "Customer does not exist!"));
+            }
         }
     }
 }
