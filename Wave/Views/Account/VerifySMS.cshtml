@@ -4,6 +4,9 @@
 
         </div>
         <div class="col-sm-4 col-xl-4">
+            <div class="row">
+                <h2>We've sent an verification SMS to <span style="color: #FDE9C9;" >05xxxxxxx..</span></h2>
+            </div>
             <form>
                 <div class="row">
                     <div class="mb-4">
@@ -12,10 +15,13 @@
                     </div>
                 </div>
 
+                <div class="d-grid gap-2 d-md-block">
+                    <button type="submit" class="btn btn-primary btn-outline-dark" onclick="window.location.href = '~/Views/Home / About.cshtml';" id="FormButton">
+                        Verify
+                    </button>
+                    <button class="btn btn-primary  btn-outline-dark " type="button">Re-Send SMS</button>
+                </div>
 
-                <button type="submit" class="btn btn-primary btn-outline-dark" onclick="window.location.href = '~/Views/Home / About.cshtml';" id="FormButton">
-                    Verify
-                </button>
 
             </form>
         </div>

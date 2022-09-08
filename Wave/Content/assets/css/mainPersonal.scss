@@ -7,7 +7,6 @@
 }
 
 
-
 body {
     background-color: var(--secondary);
 }
@@ -21,17 +20,35 @@ body {
 label.form-label {
     color: var(--tertiary);
 }
+.form-check-label{
+    color:var(--quaternary);
+}
+.form-control,
+.form-control:focus {
+    background-color: var(--primary);
+    border-color: var(--tertiary);
+    color: var(--quaternary);
+    box-shadow: 0 0 0 0.2rem rgba(234, 84, 85, 0.25);
+}
 
-input.form-control {
+.form-check-input {
     background-color: var(--primary);
     border-color: var(--tertiary);
     color: var(--quaternary);
 }
-
-input.form-control:focus {
+.form-check-input:focus,
+.form-check-input:after,
+.form-check-input:not(:disabled):not(.disabled):active:focus {
     background-color: var(--primary);
     border-color: var(--tertiary);
     color: var(--quaternary);
+    box-shadow: 0 0 0 0.2rem rgba(234, 84, 85, 0.25);
+}
+.form-check-input:checked
+{
+    background-color: var(--tertiary);
+    border-color: var(--tertiary);
+    color: var(--tertiary);
     box-shadow: 0 0 0 0.2rem rgba(234, 84, 85, 0.25);
 }
 
@@ -80,6 +97,9 @@ h2.Cafe-Name {
     color: var(--quaternary);
 }
 
+h3 {
+    color: var(--tertiary);
+}
 .row-Cafe-Name {
     background-color: var(--primary);
     margin: 20px
